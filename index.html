@@ -14,14 +14,33 @@
             margin-top: 50px;
         }
         .webinar-card {
-            margin-top: 20px;
+            margin: 20px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .webinar-card img {
+            width: 100%;
+            height: auto;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            color: #555;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center">لیست وبینارها</h1>
-        <ul id="webinarList" class="list-group"></ul>
+        <div id="webinarList" class="row"></div>
     </div>
 
     <script>
@@ -35,17 +54,47 @@
             })
             .then(data => {
                 const webinars = data.webinars;
-                const listContainer = document.getElementById('webinarList');
-                
-                webinars.forEach(slug => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'list-group-item';
-                    listItem.innerHTML = `
-                        <span>${slug}</span>
-                        <button class="btn btn-info btn-sm float-left mr-2" onclick="fetchWebinarData('${slug}')">نمایش اطلاعات</button>
-                        <a class="btn btn-primary btn-sm float-right" href="https://eseminar.tv/webinar/${slug}" target="_blank">مشاهده وبینار</a>
-                    `;
-                    listContainer.appendChild(listItem);
+                const webinarDetails = []; // آرایه‌ای برای ذخیره اطلاعات وبینارها
+
+                // برای هر اسلاگ، تاریخ شروع را بارگذاری کنیم
+                const fetchPromises = webinars.map(slug => {
+                    return fetch(`https://api.eseminar.tv/api/v1/webinar/${slug}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "success") {
+                                const webinar = data.data.webinar;
+                                webinarDetails.push({
+                                    slug: slug,
+                                    startAt: new Date(webinar.start_at)
+                                });
+                            }
+                        });
+                });
+
+                // منتظر ماندن تا همه درخواست‌ها به اتمام برسند
+                Promise.all(fetchPromises).then(() => {
+                    // مرتب‌سازی وبینارها بر اساس تاریخ شروع
+                    webinarDetails.sort((a, b) => a.startAt - b.startAt);
+
+                    // نمایش وبینارها
+                    const listContainer = document.getElementById('webinarList');
+                    webinarDetails.forEach(item => {
+                        const slug = item.slug;
+                        const card = document.createElement('div');
+                        card.className = 'col-md-4';
+                        card.innerHTML = `
+                            <div class="webinar-card card">
+                                <img src="https://api.eseminar.tv/api/v1/webinar/${slug}/cover" alt="${slug}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${slug}</h5>
+                                    <p class="card-text">توضیحات مختصر درباره وبینار.</p>
+                                    <button class="btn btn-info" onclick="fetchWebinarData('${slug}')">نمایش اطلاعات</button>
+                                    <a class="btn btn-primary float-right" href="https://eseminar.tv/webinar/${slug}" target="_blank">مشاهده وبینار</a>
+                                </div>
+                            </div>
+                        `;
+                        listContainer.appendChild(card);
+                    });
                 });
             })
             .catch(error => {
