@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دریافت اطلاعات وبینارها</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazir&display=swap" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Tahoma', sans-serif;
+            font-family: 'Vazir', sans-serif;
             background-color: #f8f9fa;
+            text-align: right; /* راست چین */
         }
         .container {
             margin-top: 50px;
@@ -38,6 +40,7 @@
         }
         .btn {
             margin-top: 10px;
+            width: 100%; /* دکمه به اندازه کامل کارت */
         }
     </style>
 </head>
@@ -87,7 +90,7 @@
                     const listContainer = document.getElementById('webinarList');
                     webinarDetails.forEach(item => {
                         const card = document.createElement('div');
-                        card.className = 'col-md-4';
+                        card.className = 'col-md-4 col-sm-6'; // ریسپانسیو
                         card.innerHTML = `
                             <div class="webinar-card card">
                                 <img src="${item.cover}" alt="${item.title}">
@@ -95,7 +98,7 @@
                                     <h5 class="card-title">${item.title}</h5>
                                     <p class="card-text">${item.description}</p>
                                     <p><strong>تاریخ شروع:</strong> ${item.startAt.toLocaleString('fa-IR')}</p>
-                                    <a class="btn btn-primary" href="https://eseminar.tv/webinar/${item.slug}" target="_blank">مشاهده وبینار</a>
+                                    <a class="btn btn-primary" href="https://eseminar.tv/webinar/${item.slug}" target="_blank">ثبت نام در وبینار</a>
                                 </div>
                             </div>
                         `;
