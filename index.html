@@ -70,13 +70,18 @@
                         .then(data => {
                             if (data.status === "success") {
                                 const webinar = data.data.webinar;
-                                webinarDetails.push({
-                                    slug: slug,
-                                    title: webinar.title,
-                                    description: webinar.description,
-                                    startAt: new Date(webinar.start_at),
-                                    cover: webinar.cover
-                                });
+                                const startAt = new Date(webinar.start_at);
+                                
+                                // فقط وبینارهایی که تاریخ آن‌ها آینده است را اضافه کنیم
+                                if (startAt > new Date()) {
+                                    webinarDetails.push({
+                                        slug: slug,
+                                        title: webinar.title,
+                                        description: webinar.description,
+                                        startAt: startAt,
+                                        cover: webinar.cover
+                                    });
+                                }
                             }
                         });
                 });
