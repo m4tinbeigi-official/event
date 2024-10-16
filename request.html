@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>درخواست وبینار جدید</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@latest/dist/font-face.css" rel="stylesheet" type="text/css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazir', sans-serif;
+            background-color: #f8f9fa;
+            text-align: right; /* راست چین */
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .btn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">درخواست وبینار جدید</h2>
+        <form id="webinarRequestForm">
+            <div class="form-group">
+                <label for="link">لینک وبینار:</label>
+                <input type="text" class="form-control" id="link" placeholder="لینک وبینار را وارد کنید" required>
+            </div>
+            <button type="submit" class="btn btn-success">ارسال درخواست</button>
+        </form>
+        
+        <h3 class="mt-5">درخواست‌های ارسال شده</h3>
+        <ul id="requestList" class="list-group mt-3"></ul>
+    </div>
+
+    <script>
+        const requestList = []; // آرایه‌ای برای ذخیره درخواست‌های وبینار
+
+        document.getElementById('webinarRequestForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // جلوگیری از بارگذاری مجدد صفحه
+
+            // دریافت اطلاعات از فرم
+            const link = document.getElementById('link').value;
+
+            // ذخیره درخواست در آرایه
+            requestList.push({ link });
+
+            // به‌روزرسانی لیست درخواست‌ها
+            updateRequestList();
+
+            // پاک کردن فرم
+            document.getElementById('webinarRequestForm').reset();
+        });
+
+        function updateRequestList() {
+            const listContainer = document.getElementById('requestList');
+            listContainer.innerHTML = ''; // پاک کردن لیست قبل از به‌روزرسانی
+
+            requestList.forEach((request, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.innerHTML = `
+                    لینک: <a href="${request.link}" target="_blank">${request.link}</a>
+                    <button class="btn btn-danger btn-sm float-left" onclick="removeRequest(${index})">حذف</button>
+                `;
+                listContainer.appendChild(listItem);
+            });
+        }
+
+        function removeRequest(index) {
+            requestList.splice(index, 1); // حذف درخواست از آرایه
+            updateRequestList(); // به‌روزرسانی لیست
+        }
+    </script>
+</body>
+</html>
