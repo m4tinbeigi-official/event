@@ -1,0 +1,34 @@
+name: Auto Push Changes
+
+on:
+  push:
+    branches:
+      - main  # نام شاخه‌ای که می‌خواهید این کار را در آن انجام دهید
+
+jobs:
+  push-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # یا نسخه‌ای که پروژه شما استفاده می‌کند
+
+      - name: Install dependencies
+        run: npm install  # یا دستور مربوط به نصب وابستگی‌های پروژه شما
+
+      - name: Run build
+        run: npm run build  # اگر نیاز به ساخت دارید، این خط را تنظیم کنید
+
+      - name: Push changes
+        run: |
+          git config --global user.name 'Rick Sanchez'
+          git config --global user.email 'm4tinbeigi@gmail.com'
+          git add .
+          git commit -m "Auto commit from GitHub Actions"
+          git push origin main  # نام شاخه‌ای که می‌خواهید به آن پوش کنید
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
